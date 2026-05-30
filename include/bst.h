@@ -8,39 +8,37 @@ template<typename T>
 class BST {
  private:
     struct Node {
-        T value;
-        int count;
+        T data;
+        int freq;
         Node* left;
         Node* right;
-        explicit Node(const T& val) : value(val), count(1), left(nullptr), right(nullptr) {}
+        explicit Node(const T& val) : data(val), freq(1), left(nullptr), right(nullptr) {}
     };
 
     Node* root;
 
-    void insert(Node*& node, const T& value) {
+    void push(Node*& node, const T& value) {
         if (node == nullptr) {
             node = new Node(value);
-        } else if (value < node->value) {
-            insert(node->left, value);
-        } else if (value > node->value) {
-            insert(node->right, value);
+        } else if (value < node->data) {
+            push(node->left, value);
+        } else if (value > node->data) {
+            push(node->right, value);
         } else {
-            node->count++;
+            node->freq++;
         }
     }
 
-    int depth(Node* node) const {
+    int height(Node* node) const {
         if (node == nullptr) return 0;
-        int leftDepth = depth(node->left);
-        int rightDepth = depth(node->right);
-        return 1 + std::max(leftDepth, rightDepth);
+        return 1 + std::max(height(node->left), height(node->right));
     }
 
-    int search(Node* node, const T& value) const {
+    int getCount(Node* node, const T& value) const {
         if (node == nullptr) return 0;
-        if (value == node->value) return node->count;
-        if (value < node->value) return search(node->left, value);
-        return search(node->right, value);
+        if (value == node->data) return node->freq;
+        if (value < node->data) return getCount(node->left, value);
+        return getCount(node->right, value);
     }
 
     void destroy(Node* node) {
@@ -50,16 +48,16 @@ class BST {
         delete node;
     }
 
-    void collect(Node* node, Node** arr, int& idx) const {
+    void fetch(Node* node, Node** arr, int& idx) const {
         if (node == nullptr) return;
-        collect(node->left, arr, idx);
+        fetch(node->left, arr, idx);
         arr[idx++] = node;
-        collect(node->right, arr, idx);
+        fetch(node->right, arr, idx);
     }
 
-    int size(Node* node) const {
+    int getTotalSize(Node* node) const {
         if (node == nullptr) return 0;
-        return 1 + size(node->left) + size(node->right);
+        return 1 + getTotalSize(node->left) + getTotalSize(node->right);
     }
 
  public:
@@ -69,24 +67,24 @@ class BST {
         destroy(root);
     }
 
-    void insert(const T& value) {
-        insert(root, value);
+    void push(const T& value) {
+        push(root, value);
     }
 
-    int depth() const {
-        return depth(root);
+    int height() const {
+        return height(root);
     }
 
-    int search(const T& value) const {
-        return search(root, value);
+    int count(const T& value) const {
+        return getCount(root, value);
     }
 
-    int size() const {
-        return size(root);
+    int getSize() const {
+        return getTotalSize(root);
     }
 
-    void collectNodes(Node** arr, int& idx) const {
-        collect(root, arr, idx);
+    void fetchNodes(Node** arr, int& idx) const {
+        fetch(root, arr, idx);
     }
 
     using NodeType = Node;
