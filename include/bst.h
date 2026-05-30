@@ -29,16 +29,16 @@ class BST {
         }
     }
 
-    int height(Node* node) const {
+    int depth(Node* node) const {
         if (node == nullptr) return 0;
-        return 1 + std::max(height(node->left), height(node->right));
+        return 1 + std::max(depth(node->left), depth(node->right));
     }
 
-    int getCount(Node* node, const T& value) const {
+    int search(Node* node, const T& value) const {
         if (node == nullptr) return 0;
         if (value == node->data) return node->freq;
-        if (value < node->data) return getCount(node->left, value);
-        return getCount(node->right, value);
+        if (value < node->data) return search(node->left, value);
+        return search(node->right, value);
     }
 
     void destroy(Node* node) {
@@ -55,9 +55,9 @@ class BST {
         fetch(node->right, arr, idx);
     }
 
-    int getTotalSize(Node* node) const {
+    int getSize(Node* node) const {
         if (node == nullptr) return 0;
-        return 1 + getTotalSize(node->left) + getTotalSize(node->right);
+        return 1 + getSize(node->left) + getSize(node->right);
     }
 
  public:
@@ -71,16 +71,16 @@ class BST {
         push(root, value);
     }
 
-    int height() const {
-        return height(root);
+    int depth() const {
+        return depth(root);
     }
 
-    int count(const T& value) const {
-        return getCount(root, value);
+    int search(const T& value) const {
+        return search(root, value);
     }
 
     int getSize() const {
-        return getTotalSize(root);
+        return getSize(root);
     }
 
     void fetchNodes(Node** arr, int& idx) const {
