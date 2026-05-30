@@ -8,24 +8,24 @@ template<typename T>
 class BST {
  private:
     struct Node {
-        T data;
-        int freq;
+        T value;
+        int count;
         Node* left;
         Node* right;
-        explicit Node(const T& val) : data(val), freq(1), left(nullptr), right(nullptr) {}
+        explicit Node(const T& val) : value(val), count(1), left(nullptr), right(nullptr) {}
     };
 
     Node* root;
 
-    void push(Node*& node, const T& value) {
+    void insert(Node*& node, const T& value) {
         if (node == nullptr) {
             node = new Node(value);
-        } else if (value < node->data) {
-            push(node->left, value);
-        } else if (value > node->data) {
-            push(node->right, value);
+        } else if (value < node->value) {
+            insert(node->left, value);
+        } else if (value > node->value) {
+            insert(node->right, value);
         } else {
-            node->freq++;
+            node->count++;
         }
     }
 
@@ -36,8 +36,8 @@ class BST {
 
     int search(Node* node, const T& value) const {
         if (node == nullptr) return 0;
-        if (value == node->data) return node->freq;
-        if (value < node->data) return search(node->left, value);
+        if (value == node->value) return node->count;
+        if (value < node->value) return search(node->left, value);
         return search(node->right, value);
     }
 
@@ -48,16 +48,16 @@ class BST {
         delete node;
     }
 
-    void fetch(Node* node, Node** arr, int& idx) const {
+    void collect(Node* node, Node** arr, int& idx) const {
         if (node == nullptr) return;
-        fetch(node->left, arr, idx);
+        collect(node->left, arr, idx);
         arr[idx++] = node;
-        fetch(node->right, arr, idx);
+        collect(node->right, arr, idx);
     }
 
-    int getSize(Node* node) const {
+    int size(Node* node) const {
         if (node == nullptr) return 0;
-        return 1 + getSize(node->left) + getSize(node->right);
+        return 1 + size(node->left) + size(node->right);
     }
 
  public:
@@ -67,8 +67,8 @@ class BST {
         destroy(root);
     }
 
-    void push(const T& value) {
-        push(root, value);
+    void insert(const T& value) {
+        insert(root, value);
     }
 
     int depth() const {
@@ -79,12 +79,12 @@ class BST {
         return search(root, value);
     }
 
-    int getSize() const {
-        return getSize(root);
+    int size() const {
+        return size(root);
     }
 
-    void fetchNodes(Node** arr, int& idx) const {
-        fetch(root, arr, idx);
+    void collectNodes(Node** arr, int& idx) const {
+        collect(root, arr, idx);
     }
 
     using NodeType = Node;
