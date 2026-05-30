@@ -12,10 +12,10 @@ int main() {
     BST<std::string> tree;
     makeTree(tree, filename);
 
-    std::cout << "Tree height: " << tree.height() << std::endl;
-    std::cout << "Unique words: " << tree.getSize() << std::endl;
-    std::cout << "'the' count: " << tree.count("the") << std::endl;
-    std::cout << "'pierre' count: " << tree.count("pierre") << std::endl;
+    std::cout << "Tree height: " << tree.depth() << std::endl;
+    std::cout << "Unique words: " << tree.size() << std::endl;
+    std::cout << "'the' count: " << tree.search("the") << std::endl;
+    std::cout << "'pierre' count: " << tree.search("pierre") << std::endl;
 
     printFreq(tree);
 
