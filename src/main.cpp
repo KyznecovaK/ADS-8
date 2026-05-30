@@ -3,21 +3,21 @@
 #include <string>
 #include "bst.h"
 
-void printFreq(BST<std::string>& bstTree);
-void makeTree(BST<std::string>& bstTree, const char* inputFile);
+void makeTree(BST<std::string>& tree, const char* filename);
+void printFreq(BST<std::string>& tree);
 
 int main() {
-    const char* inputFile = "src/war_peace.txt";
+    const char* filename = "src/war_peace.txt";
 
-    BST<std::string> bstTree;
-    makeTree(bstTree, inputFile);
+    BST<std::string> tree;
+    makeTree(tree, filename);
 
-    std::cout << "Tree depth: " << bstTree.depth() << std::endl;
-    std::cout << "Unique words: " << bstTree.size() << std::endl;
-    std::cout << "'the' count: " << bstTree.search("the") << std::endl;
-    std::cout << "'pierre' count: " << bstTree.search("pierre") << std::endl;
+    std::cout << "Tree height: " << tree.height() << std::endl;
+    std::cout << "Unique words: " << tree.getSize() << std::endl;
+    std::cout << "'the' count: " << tree.count("the") << std::endl;
+    std::cout << "'pierre' count: " << tree.count("pierre") << std::endl;
 
-    printFreq(bstTree);
+    printFreq(tree);
 
     return 0;
 }
