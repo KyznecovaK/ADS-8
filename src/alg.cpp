@@ -6,55 +6,55 @@
 #include <vector>
 #include "bst.h"
 
-void makeTree(BST<std::string>& bstObj, const char* filePath) {
-    std::ifstream inputFile(filePath);
-    if (!inputFile) {
-        std::cout << "File error!" << std::endl;
-        return;
+void makeTree(BST<std::string>& tree, const char* filename) {
+  std::ifstream file(filename);
+  if (!file) {
+    std::cout << "File error!" << std::endl;
+    return;
+  }
+  std::string word;
+  while (!file.eof()) {
+    int ch = file.get();
+    if (file.eof()) break;
+    if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
+      if (ch >= 'A' && ch <= 'Z') {
+        ch = ch - 'A' + 'a';
+      }
+      word += static_cast<char>(ch);
+    } else {
+      if (word.size() > 1) {
+        tree.insert(word);
+      }
+      word.clear();
     }
-    std::string tempWord;
-    while (!inputFile.eof()) {
-        int symbol = inputFile.get();
-        if (inputFile.eof()) break;
-        if ((symbol >= 'a' && symbol <= 'z') || (symbol >= 'A' && symbol <= 'Z')) {
-            if (symbol >= 'A' && symbol <= 'Z') {
-                symbol = symbol - 'A' + 'a';
-            }
-            tempWord += static_cast<char>(symbol);
-        } else {
-            if (tempWord.size() > 1) {
-                bstObj.push(tempWord);
-            }
-            tempWord.clear();
-        }
-    }
-    if (tempWord.size() > 1) {
-        bstObj.push(tempWord);
-    }
-    inputFile.close();
+  }
+  if (word.size() > 1) {
+    tree.insert(word);
+  }
+  file.close();
 }
 
-void printFreq(BST<std::string>& bstObj) {
-    int totalElems = bstObj.getSize();
-    if (totalElems == 0) return;
-    using NodePtr = BST<std::string>::NodeType*;
-    std::vector<NodePtr> storage(totalElems);
-    int position = 0;
-    bstObj.fetchNodes(storage.data(), position);
-    std::sort(storage.begin(), storage.begin() + position,
-        [](const NodePtr& first, const NodePtr& second) {
-            if (first->freq != second->freq)
-                return first->freq > second->freq;
-            return first->data < second->data;
-        });
-    for (int i = 0; i < position; i++) {
-        std::cout << storage[i]->data << " " << storage[i]->freq << "\n";
+void printFreq(BST<std::string>& tree) {
+  int total = tree.size();
+  if (total == 0) return;
+  using NodePtr = BST<std::string>::NodeType*;
+  std::vector<NodePtr> nodes(total);
+  int idx = 0;
+  tree.collectNodes(nodes.data(), idx);
+  std::sort(nodes.begin(), nodes.begin() + idx,
+    [](const NodePtr& a, const NodePtr& b) {
+      if (a->count != b->count)
+        return a->count > b->count;
+      return a->value < b->value;
+    });
+  for (int i = 0; i < idx; i++) {
+    std::cout << nodes[i]->value << " " << nodes[i]->count << "\n";
+  }
+  std::ofstream out("result/freq.txt");
+  if (out) {
+    for (int i = 0; i < idx; i++) {
+      out << nodes[i]->value << " " << nodes[i]->count << "\n";
     }
-    std::ofstream outFile("result/freq.txt");
-    if (outFile) {
-        for (int i = 0; i < position; i++) {
-            outFile << storage[i]->data << " " << storage[i]->freq << "\n";
-        }
-        outFile.close();
-    }
+    out.close();
+  }
 }
