@@ -1,3 +1,4 @@
+// bst.h
 // Copyright 2021 NNTU-CS
 #ifndef INCLUDE_BST_H_
 #define INCLUDE_BST_H_
@@ -31,7 +32,9 @@ class BST {
 
     int depth(Node* node) const {
         if (node == nullptr) return 0;
-        return 1 + std::max(depth(node->left), depth(node->right));
+        int leftDepth = depth(node->left);
+        int rightDepth = depth(node->right);
+        return 1 + std::max(leftDepth, rightDepth);
     }
 
     int search(Node* node, const T& value) const {
@@ -72,7 +75,7 @@ class BST {
     }
 
     int depth() const {
-        return depth(root);
+        return depth(root) - 1;
     }
 
     int search(const T& value) const {
