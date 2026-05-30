@@ -4,94 +4,94 @@
 
 #include <algorithm>
 
-template<typename ValType>
+template<typename T>
 class BST {
  private:
-    struct Item {
-        ValType data;
-        int freq;
-        Item* leftLink;
-        Item* rightLink;
+    struct Node {
+        T value;
+        int count;
+        Node* left;
+        Node* right;
         
-        explicit Item(const ValType& val) 
-            : data(val), freq(1), leftLink(nullptr), rightLink(nullptr) {}
+        explicit Node(const T& val) 
+            : value(val), count(1), left(nullptr), right(nullptr) {}
     };
 
-    Item* top;
+    Node* root;
 
-    void addItem(Item*& node, const ValType& val) {
+    void insert(Node*& node, const T& value) {
         if (node == nullptr) {
-            node = new Item(val);
-        } else if (val < node->data) {
-            addItem(node->leftLink, val);
-        } else if (val > node->data) {
-            addItem(node->rightLink, val);
+            node = new Node(value);
+        } else if (value < node->value) {
+            insert(node->left, value);
+        } else if (value > node->value) {
+            insert(node->right, value);
         } else {
-            node->freq++;
+            node->count++;
         }
     }
 
-    int calcDepth(Item* node) const {
+    int depth(Node* node) const {
         if (node == nullptr) return 0;
-        int leftDepth = calcDepth(node->leftLink);
-        int rightDepth = calcDepth(node->rightLink);
+        int leftDepth = depth(node->left);
+        int rightDepth = depth(node->right);
         return 1 + std::max(leftDepth, rightDepth);
     }
 
-    int findValue(Item* node, const ValType& val) const {
+    int search(Node* node, const T& value) const {
         if (node == nullptr) return 0;
-        if (val == node->data) return node->freq;
-        if (val < node->data) return findValue(node->leftLink, val);
-        return findValue(node->rightLink, val);
+        if (value == node->value) return node->count;
+        if (value < node->value) return search(node->left, value);
+        return search(node->right, value);
     }
 
-    void eraseAll(Item* node) {
+    void destroy(Node* node) {
         if (node == nullptr) return;
-        eraseAll(node->leftLink);
-        eraseAll(node->rightLink);
+        destroy(node->left);
+        destroy(node->right);
         delete node;
     }
 
-    void traverse(Item* node, Item** buffer, int& idx) const {
+    void collect(Node* node, Node** arr, int& idx) const {
         if (node == nullptr) return;
-        traverse(node->leftLink, buffer, idx);
-        buffer[idx++] = node;
-        traverse(node->rightLink, buffer, idx);
+        collect(node->left, arr, idx);
+        arr[idx++] = node;
+        collect(node->right, arr, idx);
     }
 
-    int countItems(Item* node) const {
+    int size(Node* node) const {
         if (node == nullptr) return 0;
-        return 1 + countItems(node->leftLink) + countItems(node->rightLink);
+        return 1 + size(node->left) + size(node->right);
     }
 
  public:
-    BST() : top(nullptr) {}
+    BST() : root(nullptr) {}
 
     ~BST() {
-        eraseAll(top);
+        destroy(root);
     }
 
-    void push(const ValType& val) {
-        addItem(top, val);
+    void insert(const T& value) {
+        insert(root, value);
     }
 
-    int height() const {
-        return calcDepth(top);
+    int depth() const {
+        return depth(root);
     }
 
-    int count(const ValType& val) const {
-        return findValue(top, val);
+    int search(const T& value) const {
+        return search(root, value);
     }
 
-    int getSize() const {
-        return countItems(top);
+    int size() const {
+        return size(root);
     }
 
-    void fetchNodes(Item** arr, int& start) const {
-        traverse(top, arr, start);
+    void collectNodes(Node** arr, int& idx) const {
+        collect(root, arr, idx);
     }
 
-    using NodeType = Item;
+    using NodeType = Node;
 };
 
 #endif  // INCLUDE_BST_H_
